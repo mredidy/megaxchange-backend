@@ -1,31 +1,28 @@
-from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+    # main.py
+    from fastapi import FastAPI, Request
+    from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI()
+    app = FastAPI()
 
-# Enable CORS
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["https://megaxchange-frontend.vercel.app"],  # allow frontend
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+    # Allow frontend to access the backend
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],  # Replace with your frontend domain in production
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
-class BridgeRequest(BaseModel):
-    tx_hash: str
+    @app.post("/bridge")
+    async def mock_bridge(request: Request):
+        data = await request.json()
+        print("Received mock request:", data)
 
-@app.get("/health")
-def health_check():
-    return {"status": "ok"}
-
-@app.post("/bridge")
-def bridge_tokens(request: BridgeRequest):
-    if not request.tx_hash.startswith("0x") or len(request.tx_hash) != 66:
-        raise HTTPException(status_code=400, detail="Invalid transaction hash format")
-
-    return {
-        "status": "submitted",
-        "message": f"Bridge initiated for Sepolia tx {request.tx_hash}"
-    }
+        # Simulate a response
+        return {
+            "status": "success",
+            "tx_hash": data.get("tx_hash", "0xmocktxhash"),
+            "bridge_status": "pending",
+            "from_chain": data.get("from_chain", "Sepolia"),
+            "to_chain": data.get("to_chain", "MegaETH")
+        }
