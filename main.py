@@ -12,8 +12,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
-def root():
+@app.get("/api/status")
+def get_status():
+    # Mock data to match what the frontend expects
     return {
         "message": "MegaXchange backend is live!",
         "status": "mock mode",
