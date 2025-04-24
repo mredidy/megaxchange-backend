@@ -13,10 +13,9 @@ app.add_middleware(
 )
 
 @app.get("/api/status")
-def get_status():
-    # Mock data to match what the frontend expects
+def status():
     return {
-        "message": "MegaXchange backend is live!",
+        "network": "Ethereum Sepolia",
         "status": "mock mode",
-        "bridge_status": "awaiting tx"
+        "updated_at": "2025-04-24 14:00 UTC"
     }
